@@ -1,6 +1,6 @@
 # Suitable
 
-# Code documentation
+# Coding documentation
 
 ## Multipeer connectivity
 
@@ -22,4 +22,4 @@ The shared items will populate the NAMEARRAY array in the application of everyon
 
 TODO: SHARE PATTERN
 
-#Design documentation
+# Design documentation
