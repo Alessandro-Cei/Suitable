@@ -83,4 +83,9 @@ The shared items will populate the **profiles** array in the application of ever
 
 # Design documentation
 
+# Future implementations
+
+ - [ ] Data persistency
+ - [ ] Nearby Interaction
+
 
