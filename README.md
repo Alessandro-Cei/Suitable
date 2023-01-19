@@ -1,6 +1,6 @@
 # Suitable
 
-#Coding documentation
+# Code documentation
 
 ## Multipeer connectivity
 
