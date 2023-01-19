@@ -5,15 +5,15 @@
 ## Multipeer connectivity
 
 The app allows you to share your profile with other people on the same local network using Apple's **[MultipeerConnectivity framework](https://developer.apple.com/documentation/multipeerconnectivity)**. 
-
+```swift
     import MultipeerConnectivity
-
+```
 
 Before sharing your profile, you must join or host a session using the **MultipeerConnectivity View Model**  
 
 **NOTE**: One very important thing to set up is the "*service*."      This is the name of the service that will allow you to host or participate in sessions with this exact service name. 
 
-	In addition to setting this variable in the code, it is necessary to add an element to the info.plist .
+In addition to setting this variable in the code, it is necessary to add an element to the info.plist .
 In fact, it will be necessary to add a new value of **Bonjur services**. 
 The value will have to follow this exact naming convention otherwise sessions will not be started and will return error.
 
@@ -21,7 +21,7 @@ The value will have to follow this exact naming convention otherwise sessions wi
 
 But now let's look at the functions within the viewmodel
 You can use the function `join()` to open the session list and select which session you want to enter:
-
+```swift
         func join() {
         peers.removeAll()
         profiles.removeAll()
@@ -36,9 +36,9 @@ You can use the function `join()` to open the session list and select which sess
         mcBrowserViewController.delegate = self
         window.rootViewController?.present(mcBrowserViewController, animated: true)
     }
-    
+ ```
 Or you can use the function `host()` to host a session:
-    
+ ```swift
         func host() {
         isHosting = true
         peers.removeAll()
@@ -53,10 +53,10 @@ Or you can use the function `host()` to host a session:
         advertiserAssistant?.delegate = self
         advertiserAssistant?.startAdvertisingPeer()
     }
-
+```
 
 Once you have joined a session you only need to share your profile using the function `send()` :
-
+```swift
     func send(profile: Profile) {
         let profile = Profile(displayName: myPeerId.displayName, body: profile.body)
         guard
@@ -71,13 +71,13 @@ Once you have joined a session you only need to share your profile using the fun
             print(error.localizedDescription)
         }
     }
-
+```
 
 
 The shared items will populate the **profiles** array in the application of everyone who was in the session
-
+```swift
         @Published var profiles: [Profile] = []
-
+```
 
 
 
