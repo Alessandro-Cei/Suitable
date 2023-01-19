@@ -21,6 +21,8 @@
 		58F8F93029797B0500D8453C /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F8F92A29797B0500D8453C /* MainViewController.swift */; };
 		58F8F93129797B0500D8453C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 58F8F92B29797B0500D8453C /* Main.storyboard */; };
 		58F8F93329797BA900D8453C /* SwiftUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F8F93229797BA900D8453C /* SwiftUIView.swift */; };
+		71F583E629798C1500F8077E /* SendProfileMultipeerConnectivityViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71F583E529798C1500F8077E /* SendProfileMultipeerConnectivityViewModel.swift */; };
+		71F583E929798C5600F8077E /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71F583E829798C5600F8077E /* Profile.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +61,8 @@
 		58F8F92A29797B0500D8453C /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		58F8F92B29797B0500D8453C /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		58F8F93229797BA900D8453C /* SwiftUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIView.swift; sourceTree = "<group>"; };
+		71F583E529798C1500F8077E /* SendProfileMultipeerConnectivityViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendProfileMultipeerConnectivityViewModel.swift; sourceTree = "<group>"; };
+		71F583E829798C5600F8077E /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,7 +104,9 @@
 		5880E1A62979829200327146 /* SwiftUI */ = {
 			isa = PBXGroup;
 			children = (
-				58F8F93229797BA900D8453C /* SwiftUIView.swift */,
+				71F583E329798BF500F8077E /* Views */,
+				71F583E729798C4B00F8077E /* Models */,
+				71F583E429798BFA00F8077E /* ViewModels */,
 			);
 			path = SwiftUI;
 			sourceTree = "<group>";
@@ -188,6 +194,30 @@
 				58F8F91929797AB200D8453C /* SuitableUITestsLaunchTests.swift */,
 			);
 			path = SuitableUITests;
+			sourceTree = "<group>";
+		};
+		71F583E329798BF500F8077E /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				58F8F93229797BA900D8453C /* SwiftUIView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		71F583E429798BFA00F8077E /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				71F583E529798C1500F8077E /* SendProfileMultipeerConnectivityViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		71F583E729798C4B00F8077E /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				71F583E829798C5600F8077E /* Profile.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -329,6 +359,8 @@
 				58F8F93029797B0500D8453C /* MainViewController.swift in Sources */,
 				58F8F8F729797AB100D8453C /* AppDelegate.swift in Sources */,
 				58F8F8F929797AB100D8453C /* SceneDelegate.swift in Sources */,
+				71F583E929798C5600F8077E /* Profile.swift in Sources */,
+				71F583E629798C1500F8077E /* SendProfileMultipeerConnectivityViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -497,7 +529,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = X66WAL58S9;
+				DEVELOPMENT_TEAM = AH7YQ86734;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Suitable/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -505,11 +537,12 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.alessandrocei.Suitable;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -525,7 +558,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = X66WAL58S9;
+				DEVELOPMENT_TEAM = AH7YQ86734;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Suitable/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -533,11 +566,12 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.alessandrocei.Suitable;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
