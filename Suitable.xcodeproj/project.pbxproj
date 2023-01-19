@@ -23,6 +23,10 @@
 		58F8F93329797BA900D8453C /* SwiftUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F8F93229797BA900D8453C /* SwiftUIView.swift */; };
 		71F583E629798C1500F8077E /* SendProfileMultipeerConnectivityViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71F583E529798C1500F8077E /* SendProfileMultipeerConnectivityViewModel.swift */; };
 		71F583E929798C5600F8077E /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71F583E829798C5600F8077E /* Profile.swift */; };
+		9CEBECD72979A9D600BD17B9 /* AddProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CEBECD62979A9D600BD17B9 /* AddProfileView.swift */; };
+		9CEBECD92979AA3000BD17B9 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CEBECD82979AA3000BD17B9 /* HomeView.swift */; };
+		9CEBECDB2979AAC500BD17B9 /* ContactsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CEBECDA2979AAC500BD17B9 /* ContactsViewModel.swift */; };
+		9CEBECDD2979AAD500BD17B9 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CEBECDC2979AAD500BD17B9 /* ProfileViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,6 +67,10 @@
 		58F8F93229797BA900D8453C /* SwiftUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIView.swift; sourceTree = "<group>"; };
 		71F583E529798C1500F8077E /* SendProfileMultipeerConnectivityViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendProfileMultipeerConnectivityViewModel.swift; sourceTree = "<group>"; };
 		71F583E829798C5600F8077E /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
+		9CEBECD62979A9D600BD17B9 /* AddProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProfileView.swift; sourceTree = "<group>"; };
+		9CEBECD82979AA3000BD17B9 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		9CEBECDA2979AAC500BD17B9 /* ContactsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsViewModel.swift; sourceTree = "<group>"; };
+		9CEBECDC2979AAD500BD17B9 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -200,6 +208,8 @@
 			isa = PBXGroup;
 			children = (
 				58F8F93229797BA900D8453C /* SwiftUIView.swift */,
+				9CEBECD62979A9D600BD17B9 /* AddProfileView.swift */,
+				9CEBECD82979AA3000BD17B9 /* HomeView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -208,6 +218,8 @@
 			isa = PBXGroup;
 			children = (
 				71F583E529798C1500F8077E /* SendProfileMultipeerConnectivityViewModel.swift */,
+				9CEBECDA2979AAC500BD17B9 /* ContactsViewModel.swift */,
+				9CEBECDC2979AAD500BD17B9 /* ProfileViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -353,9 +365,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				58F8F93329797BA900D8453C /* SwiftUIView.swift in Sources */,
+				9CEBECDB2979AAC500BD17B9 /* ContactsViewModel.swift in Sources */,
+				9CEBECDD2979AAD500BD17B9 /* ProfileViewModel.swift in Sources */,
 				58F8F92F29797B0500D8453C /* Resume.swift in Sources */,
 				58F8F92D29797B0500D8453C /* ContactCell.swift in Sources */,
 				58F8F92E29797B0500D8453C /* ProfileViewController.swift in Sources */,
+				9CEBECD72979A9D600BD17B9 /* AddProfileView.swift in Sources */,
+				9CEBECD92979AA3000BD17B9 /* HomeView.swift in Sources */,
 				58F8F93029797B0500D8453C /* MainViewController.swift in Sources */,
 				58F8F8F729797AB100D8453C /* AppDelegate.swift in Sources */,
 				58F8F8F929797AB100D8453C /* SceneDelegate.swift in Sources */,

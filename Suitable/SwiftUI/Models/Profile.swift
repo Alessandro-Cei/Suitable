@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-struct Profile: Identifiable, Equatable, Codable {
+struct ProfileVecchio: Identifiable, Equatable, Codable {
   var id = UUID()
   let displayName: String
   let body: String
@@ -18,4 +18,20 @@ struct Profile: Identifiable, Equatable, Codable {
   var isUser: Bool {
     return displayName == UIDevice.current.name
   }
+}
+
+import Foundation
+import SwiftUI
+
+struct Profile: Identifiable {
+    
+    var id = UUID()
+    var name : String
+    var surname : String
+    var birthDate : String
+    var image : String
+    var description : String
+    var tags : [String]
+    var links : [URL]
+    var backgroundColor : [Color]
 }
