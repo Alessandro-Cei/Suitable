@@ -43,8 +43,8 @@ struct HostJoinView: View {
     }
 }
 
-//struct HostJoinView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        HostJoinView()
-//    }
-//}
+struct HostJoinView_Previews: PreviewProvider {
+    static var previews: some View {
+        HostJoinView(SPMCViewModel: SendProfileMultipeerConnectivityViewModel())
+    }
+}

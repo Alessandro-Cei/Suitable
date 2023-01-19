@@ -10,7 +10,7 @@ import SwiftUI
 struct HomeView: View {
     
     @ObservedObject var SPMCViewModel = SendProfileMultipeerConnectivityViewModel()
-
+    
     
     @StateObject var portfolio = profile1
     @StateObject var contacts = contacts1
@@ -25,86 +25,86 @@ struct HomeView: View {
     
     
     var body: some View {
-            NavigationView{
-                VStack {
-                    Button(action: {
-                        //TODO: - Spostare sto pulsante xd sono troppo stanco per farlo, comunquue per ora il send che funziona è questo qui cioè quello brutto in alto e l'ho fatto qui perchè stavo avendo problemi e volevo capire quale fosse il problema. Se ti devi passare il viewmodel mi raccomando passati lo stesso viewmodel non inizializzartelo un'altro perchè l'istanza deve essere sempre la stessa. Quindi non fare @ObservedObject var SPMCViewModel = SendProfileMultipeerConnectivityViewModel()  ma invece fai     @ObservedObject var SPMCViewModel : SendProfileMultipeerConnectivityViewModel e te lo passi
-
-
-                        SPMCViewModel.send(profile: portfolio.profiles[0])
-                        
-                    }, label: {
-                        Text("SEND")
-                    })
-                    TabView{
-                        
-                        if portfolio.profiles.count > 0{
-                            ForEach(portfolio.profiles) { profile in
-                                
-                                ProfileSliderItem(profile: profile)
-                            }
-                        } else {
-                            ProfileSliderItem(profile: nil)
+        NavigationView{
+            VStack {
+//                Button(action: {
+//                    //TODO: - Spostare sto pulsante xd sono troppo stanco per farlo, comunquue per ora il send che funziona è questo qui cioè quello brutto in alto e l'ho fatto qui perchè stavo avendo problemi e volevo capire quale fosse il problema. Se ti devi passare il viewmodel mi raccomando passati lo stesso viewmodel non inizializzartelo un'altro perchè l'istanza deve essere sempre la stessa. Quindi non fare @ObservedObject var SPMCViewModel = SendProfileMultipeerConnectivityViewModel()  ma invece fai     @ObservedObject var SPMCViewModel : SendProfileMultipeerConnectivityViewModel e te lo passi
+//
+//
+//                    SPMCViewModel.send(profile: portfolio.profiles[0])
+//
+//                }, label: {
+//                    Text("SEND")
+//                })
+                TabView{
+                    
+                    if portfolio.profiles.count > 0{
+                        ForEach(portfolio.profiles) { profile in
+                            
+                            ProfileSliderItem(SPMCViewModel: SPMCViewModel, portfolio: portfolio, profile: profile)
                         }
-                        
+                    } else {
+                        ProfileSliderItem(SPMCViewModel: SPMCViewModel, portfolio: portfolio, profile: nil)
                     }
-                    .tabViewStyle(.page)
-                    
-                    
-                    makeLabel("Sessions")
-                    HostJoinView(SPMCViewModel: SPMCViewModel).padding(.vertical)
-                    
-                    
-                    
-                        makeLabel("Contacts")
-                    
-                    List{
-                        ForEach(SPMCViewModel.profiles) { contact in
-                            NavigationLink{
-                                
-                            } label: {
-                                ContactItem(contact: contact)
-                            }
-                        }
-                        .onDelete { indexSet in
-                            contacts.contacts
-                                .remove(atOffsets: indexSet)
-
-                        }
-                    }
-                    .scrollContentBackground(.hidden)
-                    
-                    Button(action: {
-                        showModalContact.toggle()
-                    }, label: {
-                         
-                        Text("Add Contact")
-                        
-                    })
-                    .buttonStyle(RoundedRectangleButtonStyle())
-                    .padding()
-                    .foregroundColor(.blue)
-                    .sheet(isPresented: $showModalContact, content: {
-                        
-                    })
-                    
                     
                 }
-                .sheet(isPresented: $showModalProfile){
-                    
-                    AddProfileView(showsheet: $showModalProfile, portfolio: portfolio)
-                }
-                .navigationTitle("My Portfolio")
-                .toolbar{
-                    ToolbarItem(placement: .navigationBarTrailing){
-                        Button{
-                            showModalProfile.toggle()
+                .tabViewStyle(.page)
+                
+                
+                makeLabel("Sessions")
+                HostJoinView(SPMCViewModel: SPMCViewModel).padding(.vertical)
+                
+                
+                
+                makeLabel("Contacts")
+                
+                List{
+                    ForEach(SPMCViewModel.profiles) { contact in
+                        NavigationLink{
+                            
                         } label: {
-                            Image(systemName: "plus")
+                            ContactItem(contact: contact)
                         }
+                    }
+                    .onDelete { indexSet in
+                        contacts.contacts
+                            .remove(atOffsets: indexSet)
+                        
+                    }
+                }
+                /*.scrollContentBackground(.hidden)*/
+                
+                Button(action: {
+                    showModalContact.toggle()
+                }, label: {
+                    
+                    Text("Add Contact")
+                    
+                })
+                .buttonStyle(RoundedRectangleButtonStyle())
+                .padding()
+                .foregroundColor(.blue)
+                .sheet(isPresented: $showModalContact, content: {
+                    
+                })
+                
+                
+            }
+            .sheet(isPresented: $showModalProfile){
+                
+                AddProfileView(showsheet: $showModalProfile, portfolio: portfolio)
+            }
+            .navigationTitle("Resumes")
+            .toolbar{
+                ToolbarItem(placement: .navigationBarTrailing){
+                    Button{
+                        showModalProfile.toggle()
+                    } label: {
+                        Image(systemName: "plus")
                     }
                 }
             }
+        }
     }
 }
 
@@ -115,10 +115,11 @@ struct HomeView_Previews: PreviewProvider {
 }
 
 struct ProfileSliderItem: View {
-    
+    @ObservedObject var SPMCViewModel: SendProfileMultipeerConnectivityViewModel
+    @ObservedObject var portfolio: ProfileViewModel
     let profile: Profile?
     
-        
+    
     var body: some View {
         ZStack(alignment: .topLeading){
             Rectangle()
@@ -131,78 +132,78 @@ struct ProfileSliderItem: View {
                 HStack{
                     
                     
-                        Image(systemName: "person.circle")
-                            .resizable()
-        //                    .scaledToFill()
-                            .foregroundColor(profile != nil ? .blue : .secondary)
-                            .font(Font.system(size: 100, weight: .light))
-                            .frame(width: 45,height: 45)
-                            .padding()
+                    Image(systemName: "person.circle")
+                        .resizable()
+                    //                    .scaledToFill()
+                        .foregroundColor(profile != nil ? .blue : .secondary)
+                        .font(Font.system(size: 100, weight: .light))
+                        .frame(width: 45,height: 45)
+                        .padding()
                     
                     HStack{
                         
                         Text(profile?.name ?? "No Profile")
                             .font(.title3)
                             .lineLimit(3)
-//                            .foregroundColor(profile != nil ? .black : .secondary)
+                        //                            .foregroundColor(profile != nil ? .black : .secondary)
                         
                         Text(profile?.surname ?? "")
                             .font(.title3)
                             .lineLimit(3)
-//                            .foregroundColor(profile != nil ? .black : .secondary)
+                        //                            .foregroundColor(profile != nil ? .black : .secondary)
                     }
                     
                 }
                 
-//                if profile != nil{
+                //                if profile != nil{
+                
+                Button(action: {
+                    SPMCViewModel.send(profile: portfolio.profiles[0])
+                }, label: {
                     
-                    Button(action: {
-                        
-                    }, label: {
-                         
-                        Text("Send")
-                        
-                    })
-                    .buttonStyle(RoundedRectangleButtonStyle())
-                    .padding()
-                    .foregroundColor(.blue)
-                    .frame(width: 150)
+                    Text("Send")
+                    
+                })
+                .buttonStyle(RoundedRectangleButtonStyle())
+                .padding()
+                .foregroundColor(.blue)
+                .frame(width: 150)
             }
             
         }
         .cornerRadius(20)
-        .padding(.bottom, 40)
+        //.padding(.bottom, 40)
         .frame(width: 350, height: 200)
-
+        
     }
 }
 
 
 struct RoundedRectangleButtonStyle: ButtonStyle {
-  func makeBody(configuration: Configuration) -> some View {
-    HStack {
-      Spacer()
-      configuration.label.foregroundColor(.white)
-      Spacer()
+    func makeBody(configuration: Configuration) -> some View {
+        HStack {
+            Spacer()
+            configuration.label.foregroundColor(.white)
+            Spacer()
+        }
+        .padding()
+        .background(Color.accentColor)
+        .cornerRadius(8)
+        .scaleEffect(configuration.isPressed ? 0.95 : 1)
     }
-    .padding()
-    .background(Color.accentColor)
-    .cornerRadius(8)
-    .scaleEffect(configuration.isPressed ? 0.95 : 1)
-  }
 }
 
 struct ContactItem: View {
     
     let contact: Profile
     
-        
+    
     var body: some View {
         HStack{
             Text(contact.name)
             Text(contact.surname)
         }
-                
+        
     }
 }
 

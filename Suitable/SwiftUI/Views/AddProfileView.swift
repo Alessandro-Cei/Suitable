@@ -40,7 +40,7 @@ struct AddProfileView: View {
                 }
                 
                 Section(header: Text("ABOUT YOU")) {
-                    TextField("Description", text: $profiletemp.description , axis: .vertical).lineLimit(30)
+                    TextField("Description", text: $profiletemp.description/* , axis: .vertical*/).lineLimit(30)
                     //                    TextField("Links", text: String($profiletemp.links[i]))
                     
                 }

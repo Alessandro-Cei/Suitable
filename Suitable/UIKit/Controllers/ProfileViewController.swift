@@ -8,7 +8,6 @@
 import UIKit
 
 class ProfileViewController: UIViewController {
-    
     let saveProfileButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Save", for: .normal)
@@ -26,7 +25,7 @@ class ProfileViewController: UIViewController {
         let label = UILabel()
         label.text = "PROFILE"
         label.textColor = .darkGray
-        label.font = UIFont.systemFont(ofSize: 13, weight: .light, width: .standard)
+        label.font = UIFont.systemFont(ofSize: 13, weight: .light)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -53,13 +52,21 @@ class ProfileViewController: UIViewController {
         tf.layer.cornerRadius = 10
         tf.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
         tf.translatesAutoresizingMaskIntoConstraints = false
+        tf.isEnabled = false
         return tf
+    }()
+    let datePicker: UIDatePicker = {
+        let picker = UIDatePicker()
+        picker.date = Date.now
+        picker.datePickerMode = .date
+        picker.translatesAutoresizingMaskIntoConstraints = false
+        return picker
     }()
     let aboutYouSectionLabel: UILabel = {
         let label = UILabel()
         label.text = "ABOUT YOU"
         label.textColor = .darkGray
-        label.font = UIFont.systemFont(ofSize: 13, weight: .light, width: .standard)
+        label.font = UIFont.systemFont(ofSize: 13, weight: .light)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -75,7 +82,7 @@ class ProfileViewController: UIViewController {
         let label = UILabel()
         label.text = "LINKS"
         label.textColor = .darkGray
-        label.font = UIFont.systemFont(ofSize: 13, weight: .light, width: .standard)
+        label.font = UIFont.systemFont(ofSize: 13, weight: .light)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -90,13 +97,17 @@ class ProfileViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        NotificationCenter.default.addObserver(self, selector: #selector(handleProfilesGotUpdated), name: .profilesGotUpdated, object: nil)
         self.view.backgroundColor = UIColor.systemGray5
         self.view.addSubview(saveProfileButton)
+        saveProfileButton.addTarget(self, action: #selector(saveButtonPressed(_:)), for: .touchUpInside)
         self.view.addSubview(photoView)
         self.view.addSubview(profileSectionLabel)
         self.view.addSubview(name)
         self.view.addSubview(surname)
         self.view.addSubview(birthdate)
+        self.view.addSubview(datePicker)
+        datePicker.addTarget(self, action: #selector(dateChanged(_:)), for: .valueChanged)
         self.view.addSubview(aboutYouSectionLabel)
         self.view.addSubview(selfDescription)
         self.view.addSubview(linksSectionLabel)
@@ -122,6 +133,9 @@ class ProfileViewController: UIViewController {
             birthdate.widthAnchor.constraint(equalToConstant: self.view.frame.width * 0.8), birthdate.heightAnchor.constraint(equalToConstant: 40), birthdate.centerXAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor), birthdate.topAnchor.constraint(equalTo: surname.bottomAnchor)
         ])
         NSLayoutConstraint.activate([
+            datePicker.centerYAnchor.constraint(equalTo: birthdate.centerYAnchor), datePicker.trailingAnchor.constraint(equalTo: birthdate.trailingAnchor, constant: -10)
+        ])
+        NSLayoutConstraint.activate([
             aboutYouSectionLabel.widthAnchor.constraint(equalToConstant: 100), aboutYouSectionLabel.heightAnchor.constraint(equalToConstant: 30), aboutYouSectionLabel.leadingAnchor.constraint(equalTo: photoView.leadingAnchor), aboutYouSectionLabel.topAnchor.constraint(equalTo: birthdate.bottomAnchor, constant: 30)
         ])
         NSLayoutConstraint.activate([
@@ -134,5 +148,20 @@ class ProfileViewController: UIViewController {
             links.widthAnchor.constraint(equalToConstant: self.view.frame.width * 0.8), links.heightAnchor.constraint(equalToConstant: 40), links.centerXAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor), links.topAnchor.constraint(equalTo: linksSectionLabel.bottomAnchor)
         ])
         
+    }
+    @objc func dateChanged(_ sender: UIDatePicker) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd/MM/yyyy"
+        let selectedDate = dateFormatter.string(from: sender.date)
+        birthdate.text = selectedDate
+    }
+    @objc func saveButtonPressed(_ sender: UIDatePicker) {
+//        ProfileManager.shared.addProfile(profile: Profile(name: name.text ?? "", surname: surname.text ?? "", birthDate: datePicker.date, description: selfDescription.text ?? "", displayName: "Test"))
+        let mainVC = self.presentationController?.presentingViewController as? MainViewController
+        mainVC?.profiles.append(Profile(name: name.text ?? "", surname: surname.text ?? "", birthDate: datePicker.date, description: selfDescription.text ?? "", displayName: "Test"))
+        self.dismiss(animated: true)
+    }
+    @objc func handleProfilesGotUpdated() {
+        print("Im updating 1")
     }
 }

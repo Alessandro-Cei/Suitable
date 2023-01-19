@@ -10,7 +10,15 @@ import SwiftUI
 
 class MainViewController: UIViewController, UIScrollViewDelegate {
     
-    var resumeArray: [(String, String)] = [("Mario", "Rossi"), ("Mario", "Bianchi"), ("Mario", "Gialli")]
+    var SPMCViewModel = SendProfileMultipeerConnectivityViewModel()
+    var profiles: [Profile] = ProfileManager.shared.profiles {
+        didSet {
+            updateUI()
+        }
+    }
+    func updateUI() {
+        NotificationCenter.default.post(name: .profilesGotUpdated, object: self)
+    }
     let cellReuseIdentifier = "ContactCell"
     var tableData = [
         (title:"Name Surname", subtitle: "Surname"),
@@ -29,8 +37,8 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
     let profileButton: UIButton = {
         let button = UIButton()
         var config = UIImage.SymbolConfiguration(paletteColors: [.systemBlue, .systemGray5])
-        config = config.applying(UIImage.SymbolConfiguration(font: .systemFont(ofSize: 30.0)))
-        button.setImage(UIImage(systemName: "person.crop.circle", withConfiguration: config), for: .normal)
+        config = config.applying(UIImage.SymbolConfiguration(font: .systemFont(ofSize: 20.0)))
+        button.setImage(UIImage(systemName: "plus", withConfiguration: config), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -82,11 +90,14 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
             ])
         } else {
             print("This code only runs on iOS 15 and lower")
+            NotificationCenter.default.addObserver(self, selector: #selector(handleProfilesGotUpdated), name: .profilesGotUpdated, object: nil)
             setupUI()
+            print(ProfileManager.shared.profiles[0])
         }
     }
     
     func setupUI() {
+        ProfileManager.shared.addProfile(profile: Profile(name: "Mario", surname: "Rossi", birthDate: Date.now, description: "Lorem ipsum dolor sit amet", displayName: "Test"))
         view.addSubview(viewTitle)
         profileButton.addTarget(self, action: #selector(self.profilePressed), for: .touchUpInside)
         view.addSubview(profileButton)
@@ -95,14 +106,14 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
         resumeScrollView.isPagingEnabled = true
         view.addSubview(resumeScrollView)
         
-        for (index, element) in resumeArray.enumerated() {
+        for (index, element) in ProfileManager.shared.profiles.enumerated() {
             var frame: CGRect = CGRect(x:0, y:0, width:0, height:0)
             frame.origin.x = self.view.frame.width * 0.9 * CGFloat(index)
             frame.size = CGSize(width: self.view.frame.width * 0.9, height: self.view.frame.height * 0.23)
             let resume = Resume(frame: frame)
-            resume.nameLabel.text = element.0
-            resume.surnameLabel.text = element.1
-            
+            resume.SPMCViewModel = SPMCViewModel
+            resume.nameLabel.text = element.name
+            resume.surnameLabel.text = element.surname
             self.resumeScrollView.addSubview(resume)
         }
         
@@ -126,7 +137,7 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
         NSLayoutConstraint.activate([
             resumePageControl.topAnchor.constraint(equalTo: resumeScrollView.bottomAnchor, constant: 1), resumePageControl.centerXAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor), resumePageControl.widthAnchor.constraint(equalToConstant: self.view.frame.width * 0.9)
         ])
-        self.resumeScrollView.contentSize = CGSize(width: (self.view.frame.width * 0.9) * CGFloat(resumeArray.count), height: self.view.frame.height * 0.23)
+        self.resumeScrollView.contentSize = CGSize(width: (self.view.frame.width * 0.9) * CGFloat(ProfileManager.shared.profiles.count), height: self.view.frame.height * 0.23)
         self.resumePageControl.addTarget(self, action: #selector(self.changePage(sender:)), for: UIControl.Event.valueChanged)
         NSLayoutConstraint.activate([
             contactsLabel.topAnchor.constraint(equalTo: resumePageControl.bottomAnchor, constant: 20), contactsLabel.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 20)
@@ -140,16 +151,24 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
         ])
     }
     
+//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+//        if segue.identifier == "goToProfile" {
+//            if let destination = segue.destination as? ProfileViewController {
+//                destination.delegate = self
+//            }
+//        }
+//    }
+    
     func configurePageControl() {
         // The total number of pages that are available is based on how many resumes we have.
-        self.resumePageControl.numberOfPages = resumeArray.count
+        self.resumePageControl.numberOfPages = ProfileManager.shared.profiles.count
         self.resumePageControl.currentPage = 0
         self.resumePageControl.pageIndicatorTintColor = UIColor.gray
         self.resumePageControl.currentPageIndicatorTintColor = UIColor.black
         self.view.addSubview(resumePageControl)
         
     }
-    
+
     // MARK : TO CHANGE WHILE CLICKING ON PAGE CONTROL
     @objc func changePage(sender: AnyObject) -> () {
         let x = CGFloat(resumePageControl.currentPage) * self.view.frame.width * 0.9
@@ -164,7 +183,14 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
         self.performSegue(withIdentifier: "goToProfile", sender: sender)
     }
     @objc func addContactPressed(sender: AnyObject) -> () {
+        SPMCViewModel.host()
+    }
+    @objc func handleProfilesGotUpdated() {
+        for x in self.view.subviews {
+            x.removeFromSuperview()
+        }
 
+        setupUI()
     }
 }
 
@@ -204,5 +230,9 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
             tableView.deleteRows(at: [indexPath], with: .fade)
         }
     }
+}
+
+extension Notification.Name {
+    static let profilesGotUpdated = Notification.Name("profilesGotUpdated")
 }
 
