@@ -19,7 +19,7 @@ class Resume: UIView, UIDocumentPickerDelegate {
     let nameLabel: UILabel = {
         let label = UILabel()
         label.text = "Name"
-        label.textColor = .white
+        label.textColor = .black
         label.font = UIFont.boldSystemFont(ofSize: 20)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -28,7 +28,7 @@ class Resume: UIView, UIDocumentPickerDelegate {
     let surnameLabel: UILabel = {
         let label = UILabel()
         label.text = "Surname"
-        label.textColor = .white
+        label.textColor = .black
         label.font = UIFont.boldSystemFont(ofSize: 20)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -36,7 +36,8 @@ class Resume: UIView, UIDocumentPickerDelegate {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = .systemGray3
+        let color = UIColor.systemBlue
+        self.backgroundColor = color.withAlphaComponent(0.1)
         self.layer.cornerRadius = 15
         self.addSubview(sendButton)
         sendButton.addTarget(self, action: #selector(self.sendPressed), for: .touchUpInside)
