@@ -9,15 +9,8 @@ import Foundation
 
 class ContactViewModel: ObservableObject{
 
-    @Published var contacts: [Profile] = [
+    @Published var contacts: [Profile] = []
         
-        Profile(name: "Nime", surname: "Cognome", birthDate: "", image: "", description: "", tags: [], links: [], backgroundColor: []),
-        Profile(name: "Nime", surname: "Cognome", birthDate: "", image: "", description: "", tags: [], links: [], backgroundColor: []),
-        Profile(name: "Nime", surname: "Cognome", birthDate: "", image: "", description: "", tags: [], links: [], backgroundColor: []),
-        Profile(name: "Nime", surname: "Cognome", birthDate: "", image: "", description: "", tags: [], links: [], backgroundColor: []),
-        Profile(name: "Nime", surname: "Cognome", birthDate: "", image: "", description: "", tags: [], links: [], backgroundColor: []),
-        Profile(name: "Nime", surname: "Cognome", birthDate: "", image: "", description: "", tags: [], links: [], backgroundColor: [])
-    ]
 
     func addContact(contact: Profile) -> Void{
         self.contacts.append(contact)

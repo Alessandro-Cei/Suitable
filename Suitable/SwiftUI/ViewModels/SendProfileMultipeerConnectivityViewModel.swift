@@ -14,7 +14,7 @@ import UIKit
  
   - Authors: Yoddikko
  
-  - Version: 0.1
+  - Version: 0.2
  */
 class SendProfileMultipeerConnectivityViewModel: NSObject, ObservableObject {
     
@@ -50,18 +50,32 @@ class SendProfileMultipeerConnectivityViewModel: NSObject, ObservableObject {
     
     ///This function let you send the profile in your session
     func send(profile: Profile) {
-        let profile = Profile(displayName: myPeerId.displayName, body: profile.body)
-        guard
-            let session = session,
-            let data = profile.body.data(using: .utf8),
-            !session.connectedPeers.isEmpty
-        else { return }
-        
+        var encodedData : Data? = nil
         do {
-            try session.send(data, toPeers: session.connectedPeers, with: .reliable)
+          let data = try JSONEncoder().encode(profile)
+            encodedData = data
+            try session?.send(data, toPeers: session!.connectedPeers, with: .reliable)
         } catch {
-            print(error.localizedDescription)
+          print(error.localizedDescription)
         }
+        
+        
+
+        
+        
+
+//        let profile = Profile(displayName: myPeerId.displayName, body: profile.body)
+//        guard
+//            let session = session,
+//            let data = profile.body.data(using: .utf8),
+//            !session.connectedPeers.isEmpty
+//        else { return }
+//
+//        do {
+//            try session.send(data, toPeers: session.connectedPeers, with: .reliable)
+//        } catch {
+//            print(error.localizedDescription)
+//        }
     }
     
     //TODO: - Add documentation and refine the function
@@ -128,10 +142,11 @@ extension SendProfileMultipeerConnectivityViewModel: MCNearbyServiceAdvertiserDe
 
 extension SendProfileMultipeerConnectivityViewModel: MCSessionDelegate {
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
-        guard let message = String(data: data, encoding: .utf8) else { return }
-        let chatMessage = Profile(displayName: peerID.displayName, body: message)
+        guard let decodedProfile = try? JSONDecoder().decode(Profile.self, from: data) else { return }
+
+        
         DispatchQueue.main.async {
-            self.profiles.append(chatMessage)
+            self.profiles.append(decodedProfile)
         }
     }
     

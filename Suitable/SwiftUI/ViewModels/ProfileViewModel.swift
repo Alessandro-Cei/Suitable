@@ -9,18 +9,15 @@ import Foundation
 
 class ProfileViewModel: ObservableObject{
 
-    @Published var profiles: [Profile] = [
+    @Published var profiles: [Profile] = []
         
-        Profile(name: "Nime", surname: "Cognome", birthDate: "", image: "", description: "", tags: [], links: [], backgroundColor: []),
-        Profile(name: "Nime", surname: "Cognome", birthDate: "", image: "", description: "", tags: [], links: [], backgroundColor: []),
-        Profile(name: "Nime", surname: "Cognome", birthDate: "", image: "", description: "", tags: [], links: [], backgroundColor: []),
-        Profile(name: "Nime", surname: "Cognome", birthDate: "", image: "", description: "", tags: [], links: [], backgroundColor: []),
-        Profile(name: "Nime", surname: "Cognome", birthDate: "", image: "", description: "", tags: [], links: [], backgroundColor: []),
-        Profile(name: "Nime", surname: "Cognome", birthDate: "", image: "", description: "", tags: [], links: [], backgroundColor: [])
-    ]
+//    @Published var prova : [Profile] = []
 
-    func addProfile(profile: Profile) -> Void{
+    func addProfile(profile: Profile) -> Void {
         self.profiles.append(profile)
+//        self.prova.append(profile)
+
+        
     }
 
 }

@@ -9,6 +9,9 @@ import SwiftUI
 
 struct HomeView: View {
     
+    @ObservedObject var SPMCViewModel = SendProfileMultipeerConnectivityViewModel()
+
+    
     @StateObject var portfolio = profile1
     @StateObject var contacts = contacts1
     
@@ -24,6 +27,15 @@ struct HomeView: View {
     var body: some View {
             NavigationView{
                 VStack {
+                    Button(action: {
+                        //TODO: - Spostare sto pulsante xd sono troppo stanco per farlo, comunquue per ora il send che funziona è questo qui cioè quello brutto in alto e l'ho fatto qui perchè stavo avendo problemi e volevo capire quale fosse il problema. Se ti devi passare il viewmodel mi raccomando passati lo stesso viewmodel non inizializzartelo un'altro perchè l'istanza deve essere sempre la stessa. Quindi non fare @ObservedObject var SPMCViewModel = SendProfileMultipeerConnectivityViewModel()  ma invece fai     @ObservedObject var SPMCViewModel : SendProfileMultipeerConnectivityViewModel e te lo passi
+
+
+                        SPMCViewModel.send(profile: portfolio.profiles[0])
+                        
+                    }, label: {
+                        Text("SEND")
+                    })
                     TabView{
                         
                         if portfolio.profiles.count > 0{
@@ -38,18 +50,16 @@ struct HomeView: View {
                     }
                     .tabViewStyle(.page)
                     
-                    HStack{
-                        Text("Contacts")
-                            .font(.title)
-                            .fontWeight(.bold)
-                            .padding(.horizontal)
-                        Spacer()
-                    }
+                    
+                    makeLabel("Sessions")
+                    HostJoinView(SPMCViewModel: SPMCViewModel).padding(.vertical)
+                    
+                    
+                    
+                        makeLabel("Contacts")
                     
                     List{
-                        
-                        ForEach(contacts.contacts) { contact in
-                            
+                        ForEach(SPMCViewModel.profiles) { contact in
                             NavigationLink{
                                 
                             } label: {
@@ -134,12 +144,12 @@ struct ProfileSliderItem: View {
                         Text(profile?.name ?? "No Profile")
                             .font(.title3)
                             .lineLimit(3)
-                            .foregroundColor(profile != nil ? .black : .secondary)
+//                            .foregroundColor(profile != nil ? .black : .secondary)
                         
                         Text(profile?.surname ?? "")
                             .font(.title3)
                             .lineLimit(3)
-                            .foregroundColor(profile != nil ? .black : .secondary)
+//                            .foregroundColor(profile != nil ? .black : .secondary)
                     }
                     
                 }
@@ -157,74 +167,6 @@ struct ProfileSliderItem: View {
                     .padding()
                     .foregroundColor(.blue)
                     .frame(width: 150)
-//                }
-                
-                
-                
-//                if profile != nil {
-//
-//                    HStack{
-//                        ForEach(profile!.links, id: \.self) { link in
-//                            ZStack{
-//                                Rectangle()
-//                                    .frame(height: 30)
-//                                    .foregroundColor(.blue)
-//                                    .opacity(0.3)
-//                                Text("\(link)")
-//                                    .font(.callout)
-//                                    .multilineTextAlignment(.leading)
-//                            }
-//                            .frame(maxWidth: 100)
-//                        }
-//                        .cornerRadius(10)
-//                    }
-//                    .lineLimit(1)
-//                    .padding(.horizontal)
-//
-//    //                        Text(profile.description)
-//    //                            .font(.title3)
-//    //                            .lineLimit(3)
-//    //                            .padding(.horizontal)
-//
-//                    HStack{
-//                        if profile!.tags.count <= 3 {
-//
-//                            ForEach(profile!.tags, id: \.self) { tag in
-//                                ZStack{
-//                                    Rectangle()
-//                                        .frame(height: 30)
-//                                        .foregroundColor(.blue)
-//                                        .opacity(0.3)
-//                                    Text(tag)
-//                                        .font(.callout)
-//                                        .multilineTextAlignment(.leading)
-//
-//                                }
-//                                .frame(maxWidth: 80)
-//                                .cornerRadius(10)
-//                            }
-//
-//                        } else {
-//
-//                            ForEach(0...3, id: \.self) { i in
-//                                ZStack{
-//                                    Rectangle()
-//                                        .frame(height: 30)
-//                                        .foregroundColor(.blue)
-//                                        .opacity(0.3)
-//                                    Text(profile!.tags[i])
-//                                        .font(.callout)
-//                                        .multilineTextAlignment(.leading)
-//
-//                                }
-//                                .cornerRadius(10)
-//                            }
-//                        }
-//                    }
-//                    .padding(.horizontal)
-//                    .lineLimit(1)
-//                }
-                
             }
             
         }
@@ -262,4 +204,17 @@ struct ContactItem: View {
         }
                 
     }
+}
+
+
+@ViewBuilder
+func makeLabel(_ label : String) -> some View {
+    HStack{
+        Text(label)
+            .font(.title)
+            .fontWeight(.bold)
+            .padding(.horizontal)
+        Spacer()
+    }
+    
 }
