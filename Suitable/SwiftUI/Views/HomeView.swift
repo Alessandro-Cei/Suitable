@@ -85,27 +85,44 @@ struct HomeView: View {
                         Spacer()
                     }
                     
-                    List{
-                        ForEach(SPMCViewModel.profiles) { contact in
-                            
-                            ZStack{
+                    if #available(iOS 16.0, *) {
+                        List{
+                            ForEach(SPMCViewModel.profiles) { contact in
                                 
-                                Color(isShowDetailProfile ? .gray : .clear)
-                                    .opacity(isShowDetailProfile ? 0.1 : 1)
+                                ZStack{
+                                    
+                                    Color(isShowDetailProfile ? .gray : .clear)
+                                        .opacity(isShowDetailProfile ? 0.1 : 1)
+                                    
+                                    ContactItem(contact: contact)
+                                        .opacity(isShowDetailProfile ? 0.5 : 1)
+                                }
+                            }
+                            //                        .onDelete { indexSet in
+                            //                            contacts.contacts
+                            //                                .remove(atOffsets: indexSet)
+                            //
+                            //                        }
+                            .listRowBackground(Color.clear)
+                        }
+                        .scrollContentBackground(.hidden)
+                        .disabled(isShowDetailProfile)
+                    } else {
+                        List{
+                            ForEach(SPMCViewModel.profiles) { contact in
                                 
-                                ContactItem(contact: contact)
-                                    .opacity(isShowDetailProfile ? 0.5 : 1)
+                                ZStack{
+                                    
+                                    Color(isShowDetailProfile ? .gray : .clear)
+                                        .opacity(isShowDetailProfile ? 0.1 : 1)
+                                    
+                                    ContactItem(contact: contact)
+                                        .opacity(isShowDetailProfile ? 0.5 : 1)
+                                }
                             }
                         }
-//                        .onDelete { indexSet in
-//                            contacts.contacts
-//                                .remove(atOffsets: indexSet)
-//
-//                        }
-                        .listRowBackground(Color.clear)
+                        .disabled(isShowDetailProfile)
                     }
-                    /*.scrollContentBackground(.hidden)*/
-                    .disabled(isShowDetailProfile)
                     
                     //                    Button(action: {
                     //                        showModalContact.toggle()
@@ -174,7 +191,7 @@ struct ProfileSliderItem: View {
                     HStack{
 
 
-                        Image("ImageProfile")
+                        Image(profile.image)
                                 .resizable()
                                 .scaledToFill()
                                 .clipShape(RoundedRectangle(cornerRadius: 10))
@@ -385,23 +402,19 @@ struct DetailView: View {
 
                             HStack{
 
-                                Text(profile.name)
+                                Text(profile.role)
                                     .font(.title3)
-                                    .lineLimit(3)
-        //                            .foregroundColor(profile != nil ? .black : .secondary)
-
-                                Text(profile.surname)
-                                    .font(.title3)
-                                    .lineLimit(3)
-        //                            .foregroundColor(profile != nil ? .black : .secondary)
+                                    
                                 Spacer()
                             }
 
                             HStack{
                                 Text(profile.motto)
                                     .foregroundColor(.secondary)
-                                    .fontWeight(.ultraLight)
+                                    .fontWeight(.light)
                                     .italic()
+//                                    .padding(.all, 0.5)
+                                
                                 Spacer()
                             }
                         }
@@ -453,7 +466,7 @@ struct DetailView: View {
                         Image(systemName: "x.circle")
                             .font(.system(size: 30))
                             .padding()
-                        
+
                     }
                 }
             

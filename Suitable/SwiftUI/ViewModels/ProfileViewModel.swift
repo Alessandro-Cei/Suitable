@@ -10,7 +10,7 @@ import Foundation
 class ProfileViewModel: ObservableObject{
 
     @Published var profiles: [Profile] = [
-        Profile( name: "edbfvsdfv", surname: "etbdvf", birthDate: Date(), image: "ImageProfile", description: "jnpiquewbròsvjbdò jbòwijbrviudb àawoiubrvoub aòwubrovuibd àouwabrvubuwoabruvjbujwbaurbvoubwaeàoòjbdsvjkba òskjbfad vòjkbawkjbreòkjvbaòwjbòrbjvdòajbwsdkjvb nkxòajebròuvbòakjbfòkajsvb", tags: [], role: "IOS Developer", motto: "uhèoauiv", displayName: "regvsfa")
+        Profile( name: "Mario", surname: "Rossi", birthDate: Date(), image: "ImageProfile", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.", tags: ["CoreData", "SpriteKit", "UiKit"], role: "IOS Developer", motto: "No one is better than what they believe to be, no one but me", displayName: "")
     ]
         
 //    @Published var prova : [Profile] = []
