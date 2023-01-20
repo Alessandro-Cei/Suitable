@@ -17,7 +17,8 @@ import UIKit
   - Version: 0.2
  */
 class SendProfileMultipeerConnectivityViewModel: NSObject, ObservableObject {
-    
+    static let shared = SendProfileMultipeerConnectivityViewModel()
+
     
     /**
      This is the name of the service that will let you host or join session with this exact service name.

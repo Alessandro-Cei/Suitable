@@ -9,6 +9,7 @@ import UIKit
 
 class Resume: UIView, UIDocumentPickerDelegate {
     var SPMCViewModel: SendProfileMultipeerConnectivityViewModel?
+    var index: Int?
     let sendButton: UIButton = {
         let button = UIButton()
         button.layer.cornerRadius = 10
@@ -58,7 +59,8 @@ class Resume: UIView, UIDocumentPickerDelegate {
         
     }
     @objc func sendPressed(sender: AnyObject) -> () {
-        SPMCViewModel?.join()
+        print(SendProfileMultipeerConnectivityViewModel.shared.profiles[0])
+        SendProfileMultipeerConnectivityViewModel.shared.send(profile: Profile(name: ProfileManager.shared.profiles[index!].name, surname: ProfileManager.shared.profiles[index!].surname, birthDate: ProfileManager.shared.profiles[index!].birthDate, description: ProfileManager.shared.profiles[index!].description, displayName: ProfileManager.shared.profiles[index!].displayName))
     }
 
     required init?(coder: NSCoder) {

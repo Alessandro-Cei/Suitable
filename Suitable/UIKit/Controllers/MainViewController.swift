@@ -7,26 +7,38 @@
 
 import UIKit
 import SwiftUI
+import MultipeerConnectivity
 
 class MainViewController: UIViewController, UIScrollViewDelegate {
     
-    var SPMCViewModel = SendProfileMultipeerConnectivityViewModel()
+    var SPMCViewModel = SendProfileMultipeerConnectivityViewModel.shared
+    var peers: [MCPeerID] = SendProfileMultipeerConnectivityViewModel.shared.peers {
+        didSet {
+            updateUI()
+        }
+    }
     var profiles: [Profile] = ProfileManager.shared.profiles {
         didSet {
             updateUI()
         }
     }
+    var contactArray: [Profile] = SendProfileMultipeerConnectivityViewModel.shared.profiles {
+        didSet {
+            updateTableView()
+        }
+    }
     func updateUI() {
         NotificationCenter.default.post(name: .profilesGotUpdated, object: self)
+        print("pera")
+    }
+    func updateTableView() {
+        NotificationCenter.default.post(name: .tableViewNeedsUpdating, object: self)
     }
     let cellReuseIdentifier = "ContactCell"
-    var tableData = [
-        (title:"Name Surname", subtitle: "Surname"),
-        (title:"Name Surname", subtitle: "Surname"),
-        (title:"Name Surname", subtitle: "Surname"),
-        (title:"Name Surname", subtitle: "Surname"),
-        (title:"Name Surname", subtitle: "Surname"),
-    ]
+//    var tableData = [
+//        (title:"Name Surname", subtitle: "Surname")
+//    ]
+    var tableData: [(title: String, subtitle: String)] = []
     let viewTitle: UILabel = {
         let label = UILabel()
         label.text = "Resumes"
@@ -54,6 +66,35 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
         let pageControl : UIPageControl = UIPageControl()
         pageControl.translatesAutoresizingMaskIntoConstraints = false
         return pageControl
+    }()
+    let sessionsLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Sessions"
+        label.font = UIFont.boldSystemFont(ofSize: 25)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    let sessionsView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.white
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    let hostButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Host session", for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    let joinButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Join session", for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    let peersLabel: UILabel = {
+        let label = UILabel()
+        return label
     }()
     let contactsLabel: UILabel = {
         let label = UILabel()
@@ -91,13 +132,13 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
         } else {
             print("This code only runs on iOS 15 and lower")
             NotificationCenter.default.addObserver(self, selector: #selector(handleProfilesGotUpdated), name: .profilesGotUpdated, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(handleTableViewNeedsUpdating), name: .tableViewNeedsUpdating, object: nil)
             setupUI()
-            print(ProfileManager.shared.profiles[0])
         }
     }
     
     func setupUI() {
-        ProfileManager.shared.addProfile(profile: Profile(name: "Mario", surname: "Rossi", birthDate: Date.now, description: "Lorem ipsum dolor sit amet", displayName: "Test"))
+        //ProfileManager.shared.addProfile(profile: Profile(name: "Mario", surname: "Rossi", birthDate: Date.now, description: "Lorem ipsum dolor sit amet", displayName: "Test"))
         view.addSubview(viewTitle)
         profileButton.addTarget(self, action: #selector(self.profilePressed), for: .touchUpInside)
         view.addSubview(profileButton)
@@ -105,26 +146,38 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
         resumeScrollView.delegate = self
         resumeScrollView.isPagingEnabled = true
         view.addSubview(resumeScrollView)
-        
-        for (index, element) in ProfileManager.shared.profiles.enumerated() {
-            var frame: CGRect = CGRect(x:0, y:0, width:0, height:0)
-            frame.origin.x = self.view.frame.width * 0.9 * CGFloat(index)
-            frame.size = CGSize(width: self.view.frame.width * 0.9, height: self.view.frame.height * 0.23)
-            let resume = Resume(frame: frame)
-            resume.SPMCViewModel = SPMCViewModel
-            resume.nameLabel.text = element.name
-            resume.surnameLabel.text = element.surname
-            self.resumeScrollView.addSubview(resume)
+        setupProfiles()
+        view.addSubview(sessionsLabel)
+        view.addSubview(sessionsView)
+        if peers.isEmpty {
+            view.addSubview(hostButton)
+            hostButton.addTarget(self, action: #selector(self.hostPressed), for: .touchUpInside)
+            view.addSubview(joinButton)
+            joinButton.addTarget(self, action: #selector(self.joinPressed), for: .touchUpInside)
+        } else {
+            var string = ""
+            for peer in peers {
+                if string == "" {
+                    let stringComponent = peer.displayName
+                    string.append(stringComponent)
+                } else {
+                    let stringComponent = ", \(peer.displayName)"
+                    string.append(stringComponent)
+                }
+            }
+            peersLabel.text = string
+            view.addSubview(peersLabel)
         }
-        
         view.addSubview(contactsLabel)
         tableView.delegate = self
         tableView.dataSource = self
         view.addSubview(tableView)
         view.addSubview(addContactButton)
         addContactButton.addTarget(self, action: #selector(self.addContactPressed), for: .touchUpInside)
-        
-        
+        setupConstraints()
+    }
+
+    func setupConstraints() {
         NSLayoutConstraint.activate([
             viewTitle.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 20), viewTitle.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 20)
         ])
@@ -137,10 +190,30 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
         NSLayoutConstraint.activate([
             resumePageControl.topAnchor.constraint(equalTo: resumeScrollView.bottomAnchor, constant: 1), resumePageControl.centerXAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor), resumePageControl.widthAnchor.constraint(equalToConstant: self.view.frame.width * 0.9)
         ])
-        self.resumeScrollView.contentSize = CGSize(width: (self.view.frame.width * 0.9) * CGFloat(ProfileManager.shared.profiles.count), height: self.view.frame.height * 0.23)
+        self.resumeScrollView.contentSize = CGSize(width: (self.view.frame.width * 0.9) * CGFloat(profiles.count), height: self.view.frame.height * 0.23)
         self.resumePageControl.addTarget(self, action: #selector(self.changePage(sender:)), for: UIControl.Event.valueChanged)
         NSLayoutConstraint.activate([
-            contactsLabel.topAnchor.constraint(equalTo: resumePageControl.bottomAnchor, constant: 20), contactsLabel.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 20)
+            sessionsLabel.topAnchor.constraint(equalTo: resumePageControl.bottomAnchor, constant: 20), sessionsLabel.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 20)
+        ])
+        NSLayoutConstraint.activate([
+            sessionsView.topAnchor.constraint(equalTo: sessionsLabel.bottomAnchor, constant: 20), sessionsView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor),
+            sessionsView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor), sessionsView.heightAnchor.constraint(equalToConstant: self.view.frame.height * 0.05)
+        ])
+        if peers.isEmpty {
+            NSLayoutConstraint.activate([
+                hostButton.heightAnchor.constraint(equalToConstant: 40), hostButton.leadingAnchor.constraint(equalTo: sessionsView.leadingAnchor, constant: 40), hostButton.centerYAnchor.constraint(equalTo: sessionsView.centerYAnchor)
+            ])
+            NSLayoutConstraint.activate([
+                joinButton.heightAnchor.constraint(equalToConstant: 40), joinButton.trailingAnchor.constraint(equalTo: sessionsView.trailingAnchor, constant: -40), joinButton.centerYAnchor.constraint(equalTo: sessionsView.centerYAnchor)
+            ])
+        } else {
+            NSLayoutConstraint.activate([
+                peersLabel.heightAnchor.constraint(equalToConstant: 40), peersLabel.centerXAnchor.constraint(equalTo: sessionsView.centerXAnchor), peersLabel.centerYAnchor.constraint(equalTo: sessionsView.centerYAnchor)
+            ])
+        }
+        
+        NSLayoutConstraint.activate([
+            contactsLabel.topAnchor.constraint(equalTo: sessionsView.bottomAnchor, constant: 20), contactsLabel.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 20)
         ])
         
         NSLayoutConstraint.activate([
@@ -150,31 +223,41 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
             tableView.topAnchor.constraint(equalTo: contactsLabel.bottomAnchor), tableView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor), tableView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor), tableView.bottomAnchor.constraint(equalTo: addContactButton.topAnchor, constant: -20)
         ])
     }
-    
-//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//        if segue.identifier == "goToProfile" {
-//            if let destination = segue.destination as? ProfileViewController {
-//                destination.delegate = self
-//            }
-//        }
-//    }
-    
+    func setupProfiles() {
+        for (index, element) in profiles.enumerated() {
+            var frame: CGRect = CGRect(x:0, y:0, width:0, height:0)
+            frame.origin.x = self.view.frame.width * 0.9 * CGFloat(index)
+            frame.size = CGSize(width: self.view.frame.width * 0.9, height: self.view.frame.height * 0.23)
+            let resume = Resume(frame: frame)
+            resume.index = index
+            resume.SPMCViewModel = SPMCViewModel
+            resume.nameLabel.text = element.name
+            resume.surnameLabel.text = element.surname
+            self.resumeScrollView.addSubview(resume)
+        }
+    }
+    func refreshProfiles() {
+        for resume in resumeScrollView.subviews {
+            resume.removeFromSuperview()
+        }
+        for subview in self.view.subviews {
+            subview.removeFromSuperview()
+        }
+        setupUI()
+    }
     func configurePageControl() {
         // The total number of pages that are available is based on how many resumes we have.
-        self.resumePageControl.numberOfPages = ProfileManager.shared.profiles.count
+        self.resumePageControl.numberOfPages = profiles.count
         self.resumePageControl.currentPage = 0
         self.resumePageControl.pageIndicatorTintColor = UIColor.gray
         self.resumePageControl.currentPageIndicatorTintColor = UIColor.black
         self.view.addSubview(resumePageControl)
-        
     }
-
     // MARK : TO CHANGE WHILE CLICKING ON PAGE CONTROL
     @objc func changePage(sender: AnyObject) -> () {
         let x = CGFloat(resumePageControl.currentPage) * self.view.frame.width * 0.9
         resumeScrollView.setContentOffset(CGPoint(x:x, y:0), animated: true)
     }
-    
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         let pageNumber = round(resumeScrollView.contentOffset.x / self.view.frame.width * 0.9)
         resumePageControl.currentPage = Int(pageNumber)
@@ -183,21 +266,26 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
         self.performSegue(withIdentifier: "goToProfile", sender: sender)
     }
     @objc func addContactPressed(sender: AnyObject) -> () {
-        SPMCViewModel.host()
+        //SPMCViewModel.host()
+    }
+    @objc func hostPressed() {
+        SendProfileMultipeerConnectivityViewModel.shared.host()
+    }
+    @objc func joinPressed() {
+        SendProfileMultipeerConnectivityViewModel.shared.join()
     }
     @objc func handleProfilesGotUpdated() {
-        for x in self.view.subviews {
-            x.removeFromSuperview()
-        }
-
-        setupUI()
+        refreshProfiles()
+    }
+    @objc func handleTableViewNeedsUpdating() {
+        tableView.reloadData()
     }
 }
 
 extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return tableData.count
+        return contactArray.count
         
     }
     
@@ -211,8 +299,8 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: self.cellReuseIdentifier, for: indexPath)
         let row = indexPath.row
-        cell.textLabel?.text = tableData[row].title
-        cell.detailTextLabel?.text = tableData[row].subtitle
+        cell.textLabel?.text = contactArray[row].name
+        cell.detailTextLabel?.text = contactArray[row].surname
         
         return cell
     }
@@ -221,18 +309,20 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
         return true
     }
     // Override to support editing the table view.
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            
-            // Delete the row from the data
-            tableData.remove(at: indexPath.row)
-            // Delete the row from the table itself
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        }
-    }
+//    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+//        if editingStyle == .delete {
+//
+//            // Delete the row from the data
+//            tableData.remove(at: indexPath.row)
+//            // Delete the row from the table itself
+//            tableView.deleteRows(at: [indexPath], with: .fade)
+//        }
+//    }
 }
 
 extension Notification.Name {
     static let profilesGotUpdated = Notification.Name("profilesGotUpdated")
+    static let tableViewNeedsUpdating = Notification.Name("tableViewNeedsUpdating")
+
 }
 

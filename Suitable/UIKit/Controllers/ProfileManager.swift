@@ -10,9 +10,9 @@ import UIKit
 
 class ProfileManager {
     
-    static var shared = ProfileViewModel()
+    static var shared = ProfileManager()
     
-    var profiles: [Profile] = [] {
+    var profiles: [Profile] = [Profile(name: "Mario", surname: "Rossi", birthDate: Date.now, description: "Lorem ipsum dolor sit amet", displayName: "Test")] {
         didSet {
             // The code in this block will be executed whenever the value of myVariable changes
             updateUI()
