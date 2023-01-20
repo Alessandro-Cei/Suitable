@@ -9,7 +9,9 @@ import Foundation
 
 class ProfileViewModel: ObservableObject{
 
-    @Published var profiles: [Profile] = []
+    @Published var profiles: [Profile] = [
+        Profile( name: "edbfvsdfv", surname: "etbdvf", birthDate: Date(), image: "ImageProfile", description: "jnpiquewbròsvjbdò jbòwijbrviudb àawoiubrvoub aòwubrovuibd àouwabrvubuwoabruvjbujwbaurbvoubwaeàoòjbdsvjkba òskjbfad vòjkbawkjbreòkjvbaòwjbòrbjvdòajbwsdkjvb nkxòajebròuvbòakjbfòkajsvb", tags: [], role: "IOS Developer", motto: "uhèoauiv", displayName: "regvsfa")
+    ]
         
 //    @Published var prova : [Profile] = []
 

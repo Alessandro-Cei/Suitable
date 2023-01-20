@@ -26,7 +26,7 @@ class ProfileViewController: UIViewController {
         let label = UILabel()
         label.text = "PROFILE"
         label.textColor = .darkGray
-        label.font = UIFont.systemFont(ofSize: 13, weight: .light, width: .standard)
+        label.font = UIFont.systemFont(ofSize: 13, weight: .light)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -59,7 +59,7 @@ class ProfileViewController: UIViewController {
         let label = UILabel()
         label.text = "ABOUT YOU"
         label.textColor = .darkGray
-        label.font = UIFont.systemFont(ofSize: 13, weight: .light, width: .standard)
+        label.font = UIFont.systemFont(ofSize: 13, weight: .light)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -75,7 +75,7 @@ class ProfileViewController: UIViewController {
         let label = UILabel()
         label.text = "LINKS"
         label.textColor = .darkGray
-        label.font = UIFont.systemFont(ofSize: 13, weight: .light, width: .standard)
+        label.font = UIFont.systemFont(ofSize: 13, weight: .light)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()

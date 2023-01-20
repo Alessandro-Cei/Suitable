@@ -26,10 +26,12 @@ struct Profile: Identifiable, Equatable, Codable {
     var name : String
     var surname : String
     var birthDate : Date
-    var image : String?
+    var image : String
     var description : String
     var tags : [String]?
     var links : [URL]?
+    var role: String
+    var motto: String
     
 //    var backgroundColor : [Color]
     

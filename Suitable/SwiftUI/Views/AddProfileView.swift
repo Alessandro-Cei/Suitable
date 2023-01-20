@@ -11,95 +11,106 @@ struct AddProfileView: View {
     
     @Binding var showsheet: Bool
     @ObservedObject var portfolio: ProfileViewModel
-    @State var profiletemp = (Profile(name: "", surname: "", birthDate: Date(), image: "", description: "", tags: [], links: [], displayName: ""))
+    @State var profiletemp = (Profile(name: "", surname: "", birthDate: Date(), image: "ImageProfile", description: "", tags: [], links: [], role: "", motto: "", displayName: ""))
     @State var linktemp = ""
-    @State var tags = ["Swiftui", "CoreData", "SpriteKit", "UiKit"]
+    @State var tags = ["CoreData", "SpriteKit", "UiKit"]
     @State private var disabled = true
+    let textLimit = 70
+    
     var body: some View {
         
         NavigationView{
-            
-            Form {
-                
-                Image(systemName: "person.circle")
-                    .resizable()
-                    .foregroundColor(.blue)
-                    .font(Font.system(size: 100, weight: .light))
-                    .frame(width: 100,height: 100)
-                    .padding(.leading, 100)
-                
-                Section(header: Text("PROFILE")) {
-                    TextField("Name", text: $profiletemp.name)
-                    TextField("Surname", text: $profiletemp.surname)
-                    DatePicker(
-                        "Birthdate",
-                        selection: $profiletemp.birthDate,
-                        displayedComponents: [.date]
+                Form {
+                    
+                    Image(profiletemp.image)
+                        .resizable()
+                        .scaledToFill()
+                        .clipShape(Circle())
+                        .frame(width: 110,height: 110)
+                        .padding(.leading, 100)
+                    
+                    Section(header: Text("PROFILE")) {
+                        TextField("Name", text: $profiletemp.name)
+                        TextField("Surname", text: $profiletemp.surname)
+                        DatePicker(
+                            "Birthdate",
+                            selection: $profiletemp.birthDate,
+                            displayedComponents: [.date]
                         )
-//                   TextField("Birthdate", text: $profiletemp.birthDate)
-                }
-                
-                Section(header: Text("ABOUT YOU")) {
-                    TextField("Description", text: $profiletemp.description , axis: .vertical).lineLimit(30)
-                    //                    TextField("Links", text: String($profiletemp.links[i]))
-                    
-                }
-                Section(header: Text("LINKS")) {
-                    
-                    HStack{
-                        TextField("Links", text: $linktemp)
+                        //                   TextField("Birthdate", text: $profiletemp.birthDate)
                     }
-                }
-                
-                Section(header: Text("Tags")) {
-                    HStack{
+                    
+                    Section(header: Text("ABOUT YOU")) {
                         
-                        ForEach(tags, id: \.self){ tag in
-                            Button(action: {
-                                
-                                
-                                if !(profiletemp.tags?.contains(tag) ?? false) {
-                                    profiletemp.tags?.append(tag)
-                                    
-                                } else {
-                                    if let index = profiletemp.tags!.firstIndex(of: tag) {
-                                        profiletemp.tags?.remove(at: index)
-                                        
-                                    }
+                        TextField("Role", text: $profiletemp.role)
+                        TextField("Quote", text: $profiletemp.motto)
+                            .onReceive(profiletemp.motto.publisher.collect()) {
+                                let s = String($0.prefix(textLimit))
+                                if profiletemp.motto != s {
+                                    profiletemp.motto = s
                                 }
-                                
-                            }, label: {
-                                
-                                ZStack{
-                                    Rectangle()
-                                        .frame(height: 30)
-                                        .foregroundColor( profiletemp.tags!.contains(tag) ? .red : .blue)
-                                        .opacity(0.3)
-                                    Text(tag)
-                                        .font(.callout)
-                                    
-                                }
-                                .cornerRadius(10)
-                            })
+                            }
+                        
+                        TextField("Description", text: $profiletemp.description/* , axis: .vertical*/).lineLimit(30)
+                        //                    TextField("Links", text: String($profiletemp.links[i]))
+                        
+                    }
+                    Section(header: Text("LINKS")) {
+                        
+                        HStack{
+                            TextField("Links", text: $linktemp)
                         }
                     }
-                    .frame(height: 60)
-                    .buttonStyle(BorderlessButtonStyle())
-                }
-                
-            }
-            .toolbar{
-                ToolbarItem(placement: .navigationBarTrailing){
-                    Button(action: {
-                        showsheet.toggle()
-                        portfolio.addProfile(profile: profiletemp)
-                    }, label: {
-                        Text("Save")
-                    })
-                    .disabled(profiletemp.name == "" || profiletemp.surname == "" ? true : false)
+                    
+                    Section(header: Text("Tags")) {
+                        HStack{
+                            
+                            ForEach(tags, id: \.self){ tag in
+                                Button(action: {
+                                    
+                                    
+                                    if !(profiletemp.tags?.contains(tag) ?? false) {
+                                        profiletemp.tags?.append(tag)
+                                        
+                                    } else {
+                                        if let index = profiletemp.tags!.firstIndex(of: tag) {
+                                            profiletemp.tags?.remove(at: index)
+                                            
+                                        }
+                                    }
+                                    
+                                }, label: {
+                                    
+                                    ZStack{
+                                        Rectangle()
+                                            .frame(height: 30)
+                                            .foregroundColor( profiletemp.tags!.contains(tag) ? .red : .blue)
+                                            .opacity(0.2)
+                                        Text(tag)
+                                            .font(.callout)
+                                        
+                                    }
+                                    .cornerRadius(30)
+                                })
+                            }
+                        }
+                        .frame(height: 60)
+                        .buttonStyle(BorderlessButtonStyle())
+                    }
                     
                 }
-            }
+                .toolbar{
+                    ToolbarItem(placement: .navigationBarTrailing){
+                        Button(action: {
+                            showsheet.toggle()
+                            portfolio.addProfile(profile: profiletemp)
+                        }, label: {
+                            Text("Save")
+                        })
+                        .disabled(profiletemp.name == "" || profiletemp.surname == "" || profiletemp.role == "" ? true : false)
+                        
+                    }
+                }
         }
         
     }
