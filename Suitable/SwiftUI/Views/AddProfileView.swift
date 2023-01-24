@@ -11,7 +11,7 @@ struct AddProfileView: View {
     
     @Binding var showsheet: Bool
     @ObservedObject var portfolio: ProfileViewModel
-    @State var profiletemp = (Profile(name: "", surname: "", birthDate: Date(), image: "ImageProfile", description: "", tags: [], links: [], role: "", motto: "", displayName: ""))
+    @State var profiletemp = (Profile(name: "", surname: "", birthDate: Date(), image: "ImageProfile", description: "", tags: [], links: [], role: "", quote: "", displayName: ""))
     @State var linktemp = ""
     @State var tags = ["CoreData", "SpriteKit", "UiKit"]
     @State private var disabled = true
@@ -26,8 +26,8 @@ struct AddProfileView: View {
                         .resizable()
                         .scaledToFill()
                         .clipShape(Circle())
-                        .frame(width: 110,height: 110)
-                        .padding(.leading, 100)
+//                        .frame(width: 110,height: 110)
+                        .padding(.leading, 30)
                     
                     Section(header: Text("PROFILE")) {
                         TextField("Name", text: $profiletemp.name)
@@ -43,11 +43,11 @@ struct AddProfileView: View {
                     Section(header: Text("ABOUT YOU")) {
                         
                         TextField("Role", text: $profiletemp.role)
-                        TextField("Quote", text: $profiletemp.motto)
-                            .onReceive(profiletemp.motto.publisher.collect()) {
+                        TextField("Quote", text: $profiletemp.quote)
+                            .onReceive(profiletemp.quote.publisher.collect()) {
                                 let s = String($0.prefix(textLimit))
-                                if profiletemp.motto != s {
-                                    profiletemp.motto = s
+                                if profiletemp.quote != s {
+                                    profiletemp.quote = s
                                 }
                             }
                         

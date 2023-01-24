@@ -8,6 +8,7 @@
 import Foundation
 import MultipeerConnectivity
 import UIKit
+import SwiftUI
 
 /**
  This is the `SendProfileMultipeerConnectivityViewModel` that manages all the interaction with the MultipeerConnectivity framework. With this ViewModel you can host or join a session and send profiles to the current session.
@@ -50,10 +51,10 @@ class SendProfileMultipeerConnectivityViewModel: NSObject, ObservableObject {
     
     ///This function let you send the profile in your session
     func send(profile: Profile) {
-        var encodedData : Data? = nil
+//        var encodedData : Data? = nil
         do {
           let data = try JSONEncoder().encode(profile)
-            encodedData = data
+//            encodedData = data
             try session?.send(data, toPeers: session!.connectedPeers, with: .reliable)
         } catch {
           print(error.localizedDescription)
@@ -208,5 +209,4 @@ extension SendProfileMultipeerConnectivityViewModel: MCBrowserViewControllerDele
         browserViewController.dismiss(animated: true)
     }
 }
-
 

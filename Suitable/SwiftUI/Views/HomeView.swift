@@ -171,157 +171,6 @@ struct HomeView_Previews: PreviewProvider {
     }
 }
 
-struct ProfileSliderItem: View {
-    
-    let profile: Profile
-    var SPMCViewModel: SendProfileMultipeerConnectivityViewModel?
-    @Binding var isShowDetailProfile: Bool
-    
-        
-    var body: some View {
-        ZStack(alignment: .topLeading){
-            Rectangle()
-                .frame(width: 350, height: 220)
-                .foregroundColor(.gray)
-                .opacity(0.1)
-            
-            VStack(alignment: .leading){
-
-
-                    HStack{
-
-
-                        Image(profile.image)
-                                .resizable()
-                                .scaledToFill()
-                                .clipShape(RoundedRectangle(cornerRadius: 10))
-                                .frame(width: 70,height: 70)
-                                .padding()
-
-                        VStack{
-
-                            HStack{
-
-                                Text(profile.role)
-                                    .font(.title)
-                                Spacer()
-                            }
-
-                            HStack{
-                                
-                                Text(profile.motto)
-                                    .foregroundColor(.secondary)
-                                    .fontWeight(.light)
-                                    .italic()
-                                
-                                Spacer()
-                            }
-
-                        }
-                        .padding()
-
-                    }
-
-                if !profile.tags!.isEmpty {
-
-                    HStack{
-                        ForEach(profile.tags!, id: \.self){ tag in
-
-                            ZStack{
-                                Rectangle()
-                                    .frame(width: 90, height: 30)
-                                    .foregroundColor(.blue)
-                                    .opacity(0.2)
-                                //                                    .border(.blue, width: 3)
-                                Text(tag)
-                                    .font(.callout)
-                                    .fontWeight(.semibold)
-                                    .foregroundColor(.blue)
-
-                            }
-                            .cornerRadius(30)
-                        }
-                    }
-                    .padding(.horizontal)
-                    
-                    HStack{
-
-                        Button(action: {
-                            isShowDetailProfile.toggle()
-                        }, label: {
-                            Text("See All")
-                                .foregroundColor(Color("RedCustom"))
-                                .fontWeight(.semibold)
-                                .underline()
-                        })
-
-                        Spacer()
-
-                        Button(action: {
-
-                            //TODO: - Spostare sto pulsante xd sono troppo stanco per farlo, comunquue per ora il send che funziona è questo qui cioè quello brutto in alto e l'ho fatto qui perchè stavo avendo problemi e volevo capire quale fosse il problema. Se ti devi passare il viewmodel mi raccomando passati lo stesso viewmodel non inizializzartelo un'altro perchè l'istanza deve essere sempre la stessa. Quindi non fare @ObservedObject var SPMCViewModel = SendProfileMultipeerConnectivityViewModel()  ma invece fai     @ObservedObject var SPMCViewModel : SendProfileMultipeerConnectivityViewModel e te lo passi
-
-                            if SPMCViewModel != nil {
-                                SPMCViewModel?.send(profile: profile)
-                            }
-
-                        }, label: {
-
-                            Text("Send")
-
-                        })
-                        .buttonStyle(RoundedRectangleButtonStyle())
-                        .frame(width: 110)
-                    }
-                    .padding(.horizontal)
-
-                } else {
-                    
-                    Spacer()
-                    
-                    HStack{
-
-                        Button(action: {
-                            isShowDetailProfile.toggle()
-                        }, label: {
-                            Text("See All")
-                                .foregroundColor(Color("RedCustom"))
-                                .fontWeight(.semibold)
-                                .underline()
-                        })
-
-                        Spacer()
-
-                        Button(action: {
-
-                            //TODO: - Spostare sto pulsante xd sono troppo stanco per farlo, comunquue per ora il send che funziona è questo qui cioè quello brutto in alto e l'ho fatto qui perchè stavo avendo problemi e volevo capire quale fosse il problema. Se ti devi passare il viewmodel mi raccomando passati lo stesso viewmodel non inizializzartelo un'altro perchè l'istanza deve essere sempre la stessa. Quindi non fare @ObservedObject var SPMCViewModel = SendProfileMultipeerConnectivityViewModel()  ma invece fai     @ObservedObject var SPMCViewModel : SendProfileMultipeerConnectivityViewModel e te lo passi
-
-                            if SPMCViewModel != nil {
-                                SPMCViewModel?.send(profile: profile)
-                            }
-
-                        }, label: {
-
-                            Text("Send")
-
-                        })
-                        .buttonStyle(RoundedRectangleButtonStyle())
-                        .frame(width: 110)
-                    }
-                    .padding(.horizontal)
-                    .padding(.bottom)
-                }
-
-            }
-            
-        }
-        .frame(width: 350)
-        .cornerRadius(20)
-        .padding()
-
-    }
-}
-
 
 struct RoundedRectangleButtonStyle: ButtonStyle {
   func makeBody(configuration: Configuration) -> some View {
@@ -345,7 +194,7 @@ struct ContactItem: View {
     var body: some View {
         HStack{
             
-            Image(contact.image ?? "ImageProfile")
+            Image(contact.image )
                 .resizable()
                 .scaledToFill()
                 .clipShape(RoundedRectangle(cornerRadius: 10))
@@ -409,7 +258,7 @@ struct DetailView: View {
                             }
 
                             HStack{
-                                Text(profile.motto)
+                                Text(profile.quote)
                                     .foregroundColor(.secondary)
                                     .fontWeight(.light)
                                     .italic()

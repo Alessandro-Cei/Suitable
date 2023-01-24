@@ -31,7 +31,7 @@ struct Profile: Identifiable, Equatable, Codable {
     var tags : [String]?
     var links : [URL]?
     var role: String
-    var motto: String
+    var quote: String
     
 //    var backgroundColor : [Color]
     
